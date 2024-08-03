@@ -49,7 +49,7 @@ typedef struct weightI {
 	Color background;
 }WeightI;
 
-WeightI* weightConstruct(
+WeightI* WeightConstruct(
 	WeightI* parent,
 	uint16_t x, 
 	uint16_t y, 
@@ -62,4 +62,27 @@ WeightI* weightConstruct(
 	Color background,
 	void (*init)(struct weightI*));
 
-void rectangleInit(WeightI* self);
+void RectangleInit(WeightI* self);
+
+typedef struct gridView 
+{
+	WeightI interface;
+	uint8_t row;
+	uint8_t col;
+	uint8_t rowSpace;
+	uint8_t colSpace;
+	// flowDirection
+	uint16_t* data;
+}GridView;
+
+GridView* GridViewConstruct(
+	WeightI* parent,
+	uint16_t x,
+	uint16_t y,
+	uint16_t width,
+	uint16_t height,
+	uint8_t row,
+	uint8_t col,
+	uint8_t rowSpace,
+	uint8_t colSpace,
+	uint16_t* data);

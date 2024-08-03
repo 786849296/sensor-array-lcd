@@ -131,7 +131,6 @@ static void Spi2DmaWrite(Spi* self, uint8_t* buffer, uint32_t length, uint32_t t
 		printf("spi dma timeout\n");
 		return;
 	}
-	LL_IWDG_ReloadCounter(IWDG);
 	LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_5);
 	LL_DMA_ConfigAddresses(DMA1, LL_DMA_CHANNEL_5, (uint32_t)buffer, LL_SPI_DMA_GetRegAddr(SPI2), LL_DMA_GetDataTransferDirection(DMA1, LL_DMA_CHANNEL_5));
 	LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_5, length);

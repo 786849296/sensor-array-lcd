@@ -15,7 +15,7 @@ typedef enum
  * @param dc ����/����ѡ��
  * @param data Ҫд�������
  */
-static void _st7789vWrite8(St7789v* self, DC dc, uint8_t data)
+static void _St7789vWrite8(St7789v* self, DC dc, uint8_t data)
 {
     if (CMD == dc)
     { 
@@ -34,7 +34,7 @@ static void _st7789vWrite8(St7789v* self, DC dc, uint8_t data)
     self->spiI->writeRead8(self->spiI, data);
 }
 
-static void st7789vInit(St7789v* self)
+static void St7789vInit(St7789v* self)
 {
     // ǰ�����Ƿ��б�Ҫ��
     LL_GPIO_SetOutputPin(self->RST.group, self->RST.pin);
@@ -45,85 +45,85 @@ static void st7789vInit(St7789v* self)
     osDelay(100);
     
     // 1. ��ʾ����
-    _st7789vWrite8(self, CMD, 0x36);
-    _st7789vWrite8(self, DATA, self->orientation);
+    _St7789vWrite8(self, CMD, 0x36);
+    _St7789vWrite8(self, DATA, self->orientation);
 
     // 2. ɫ��ģʽ
-    _st7789vWrite8(self, CMD, 0x3A);
-    _st7789vWrite8(self, DATA, self->colorMode);
+    _St7789vWrite8(self, CMD, 0x3A);
+    _St7789vWrite8(self, DATA, self->colorMode);
 
     // 3. ǰ�������
-    _st7789vWrite8(self, CMD, 0xB2);
-    _st7789vWrite8(self, DATA, 0x0C);
-    _st7789vWrite8(self, DATA, 0x0C);
-    _st7789vWrite8(self, DATA, 0x00);
-    _st7789vWrite8(self, DATA, 0x33);
-    _st7789vWrite8(self, DATA, 0x33);
+    _St7789vWrite8(self, CMD, 0xB2);
+    _St7789vWrite8(self, DATA, 0x0C);
+    _St7789vWrite8(self, DATA, 0x0C);
+    _St7789vWrite8(self, DATA, 0x00);
+    _St7789vWrite8(self, DATA, 0x33);
+    _St7789vWrite8(self, DATA, 0x33);
 
     // 4. ��Դ����
-    _st7789vWrite8(self, CMD, 0xB7);
-    _st7789vWrite8(self, DATA, 0x11);
-    _st7789vWrite8(self, CMD, 0xBB);
-    _st7789vWrite8(self, DATA, 0x35);
-    _st7789vWrite8(self, CMD, 0xD0);
-    _st7789vWrite8(self, DATA, 0xA4);
-    _st7789vWrite8(self, DATA, 0xA1);
+    _St7789vWrite8(self, CMD, 0xB7);
+    _St7789vWrite8(self, DATA, 0x11);
+    _St7789vWrite8(self, CMD, 0xBB);
+    _St7789vWrite8(self, DATA, 0x35);
+    _St7789vWrite8(self, CMD, 0xD0);
+    _St7789vWrite8(self, DATA, 0xA4);
+    _St7789vWrite8(self, DATA, 0xA1);
 
     // 5. ������ʾЧ��
     //_st7789vWrite8(self, CMD, 0xC0);
     //_st7789vWrite8(self, DATA, 0x2C);
 
     // 6. ����VRH��VDV
-    _st7789vWrite8(self, CMD, 0xC2);
-    _st7789vWrite8(self, DATA, 0x01);
-    _st7789vWrite8(self, DATA, 0xFF);
-    _st7789vWrite8(self, CMD, 0xC3);
-    _st7789vWrite8(self, DATA, 0x0D);
-    _st7789vWrite8(self, CMD, 0xC4);
-    _st7789vWrite8(self, DATA, 0x20);
+    _St7789vWrite8(self, CMD, 0xC2);
+    _St7789vWrite8(self, DATA, 0x01);
+    _St7789vWrite8(self, DATA, 0xFF);
+    _St7789vWrite8(self, CMD, 0xC3);
+    _St7789vWrite8(self, DATA, 0x0D);
+    _St7789vWrite8(self, CMD, 0xC4);
+    _St7789vWrite8(self, DATA, 0x20);
 
     // 7. ����֡��
-    _st7789vWrite8(self, CMD, 0xC6);
-    _st7789vWrite8(self, DATA, self->frameRate);
+    _St7789vWrite8(self, CMD, 0xC6);
+    _St7789vWrite8(self, DATA, self->frameRate);
 
     // δָ֪��0xD6
     // 8. gamma����
-    _st7789vWrite8(self, CMD, 0xE0);
-    _st7789vWrite8(self, DATA, 0xF0);
-    _st7789vWrite8(self, DATA, 0x06);
-    _st7789vWrite8(self, DATA, 0x0B);
-    _st7789vWrite8(self, DATA, 0x0A);
-    _st7789vWrite8(self, DATA, 0x09);
-    _st7789vWrite8(self, DATA, 0x26);
-    _st7789vWrite8(self, DATA, 0x29);
-    _st7789vWrite8(self, DATA, 0x33);
-    _st7789vWrite8(self, DATA, 0x41);
-    _st7789vWrite8(self, DATA, 0x18);
-    _st7789vWrite8(self, DATA, 0x16);
-    _st7789vWrite8(self, DATA, 0x15);
-    _st7789vWrite8(self, DATA, 0x29);
-    _st7789vWrite8(self, DATA, 0x2D);
-    _st7789vWrite8(self, CMD, 0xE1);
-    _st7789vWrite8(self, DATA, 0xF0);
-    _st7789vWrite8(self, DATA, 0x04);
-    _st7789vWrite8(self, DATA, 0x08);
-    _st7789vWrite8(self, DATA, 0x08);
-    _st7789vWrite8(self, DATA, 0x07);
-    _st7789vWrite8(self, DATA, 0x03);
-    _st7789vWrite8(self, DATA, 0x28);
-    _st7789vWrite8(self, DATA, 0x32);
-    _st7789vWrite8(self, DATA, 0x40);
-    _st7789vWrite8(self, DATA, 0x3B);
-    _st7789vWrite8(self, DATA, 0x19);
-    _st7789vWrite8(self, DATA, 0x18);
-    _st7789vWrite8(self, DATA, 0x2A);
-    _st7789vWrite8(self, DATA, 0x2E);
+    _St7789vWrite8(self, CMD, 0xE0);
+    _St7789vWrite8(self, DATA, 0xF0);
+    _St7789vWrite8(self, DATA, 0x06);
+    _St7789vWrite8(self, DATA, 0x0B);
+    _St7789vWrite8(self, DATA, 0x0A);
+    _St7789vWrite8(self, DATA, 0x09);
+    _St7789vWrite8(self, DATA, 0x26);
+    _St7789vWrite8(self, DATA, 0x29);
+    _St7789vWrite8(self, DATA, 0x33);
+    _St7789vWrite8(self, DATA, 0x41);
+    _St7789vWrite8(self, DATA, 0x18);
+    _St7789vWrite8(self, DATA, 0x16);
+    _St7789vWrite8(self, DATA, 0x15);
+    _St7789vWrite8(self, DATA, 0x29);
+    _St7789vWrite8(self, DATA, 0x2D);
+    _St7789vWrite8(self, CMD, 0xE1);
+    _St7789vWrite8(self, DATA, 0xF0);
+    _St7789vWrite8(self, DATA, 0x04);
+    _St7789vWrite8(self, DATA, 0x08);
+    _St7789vWrite8(self, DATA, 0x08);
+    _St7789vWrite8(self, DATA, 0x07);
+    _St7789vWrite8(self, DATA, 0x03);
+    _St7789vWrite8(self, DATA, 0x28);
+    _St7789vWrite8(self, DATA, 0x32);
+    _St7789vWrite8(self, DATA, 0x40);
+    _St7789vWrite8(self, DATA, 0x3B);
+    _St7789vWrite8(self, DATA, 0x19);
+    _St7789vWrite8(self, DATA, 0x18);
+    _St7789vWrite8(self, DATA, 0x2A);
+    _St7789vWrite8(self, DATA, 0x2E);
 
     // 9. �����ſ�
-    _st7789vWrite8(self, CMD, 0xE4);
-    _st7789vWrite8(self, DATA, 0x25);
-    _st7789vWrite8(self, DATA, 0x00);
-    _st7789vWrite8(self, DATA, 0x00);
+    _St7789vWrite8(self, CMD, 0xE4);
+    _St7789vWrite8(self, DATA, 0x25);
+    _St7789vWrite8(self, DATA, 0x00);
+    _St7789vWrite8(self, DATA, 0x00);
 
     //// 10. 垂直滚动
     //_st7789vWrite8(self, CMD, 0x33);
@@ -138,14 +138,14 @@ static void st7789vInit(St7789v* self)
     //_st7789vWrite8(self, DATA, 0x14);
 
     // 11. �ӷ�תģʽ�ָ�
-    _st7789vWrite8(self, CMD, 0x21);
+    _St7789vWrite8(self, CMD, 0x21);
 
     // 12. �˳�˯��ģʽ
-    _st7789vWrite8(self, CMD, 0x11);
+    _St7789vWrite8(self, CMD, 0x11);
     osDelay(120);
 
     // 13. ��ʾ����
-    _st7789vWrite8(self, CMD, 0x29);
+    _St7789vWrite8(self, CMD, 0x29);
 }
 
 /**
@@ -154,68 +154,68 @@ static void st7789vInit(St7789v* self)
  *
  * @param self ST7789V����ָ��
  */
-static void st7789vDeinit(St7789v* self)
+static void St7789vDeinit(St7789v* self)
 {
     vPortFree(self->interface.buffer);
     vPortFree(self);
 }
 
-static void _st7789vSetWindow(St7789v* self, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
+static void _St7789vSetWindow(St7789v* self, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
 {
     assert_param(x0 >= 0 && x0 < self->interface.width);
     assert_param(y0 >= 0 && y0 < self->interface.height);
     assert_param(x1 >= 0 && x1 < self->interface.width);
     assert_param(y1 >= 0 && y1 < self->interface.height);
-    x0 = x0 + self->offsetX > self->interface.width ? self->interface.width : x0 + self->offsetX;
-    y0 = y0 + self->offsetY > self->interface.height ? self->interface.height : y0 + self->offsetY;
-    x1 = x1 + self->offsetX > self->interface.width ? self->interface.width : x1 + self->offsetX;
-    y1 = y1 + self->offsetY > self->interface.height ? self->interface.height : y1 + self->offsetY;
+    x0 += self->offsetX;
+    y0 += self->offsetY;
+    x1 += self->offsetX;
+    y1 += self->offsetY;
 
-	_st7789vWrite8(self, CMD, 0x2A);
-	_st7789vWrite8(self, DATA, x0 >> 8);
-	_st7789vWrite8(self, DATA, x0 & 0xff);
-	_st7789vWrite8(self, DATA, x1 >> 8);
-	_st7789vWrite8(self, DATA, x1 & 0xff);
+	_St7789vWrite8(self, CMD, 0x2A);
+	_St7789vWrite8(self, DATA, x0 >> 8);
+	_St7789vWrite8(self, DATA, x0 & 0xff);
+	_St7789vWrite8(self, DATA, x1 >> 8);
+	_St7789vWrite8(self, DATA, x1 & 0xff);
 
-	_st7789vWrite8(self, CMD, 0x2B);
-	_st7789vWrite8(self, DATA, y0 >> 8);
-	_st7789vWrite8(self, DATA, y0 & 0xff);
-	_st7789vWrite8(self, DATA, y1 >> 8);
-	_st7789vWrite8(self, DATA, y1 & 0xff);
+	_St7789vWrite8(self, CMD, 0x2B);
+	_St7789vWrite8(self, DATA, y0 >> 8);
+	_St7789vWrite8(self, DATA, y0 & 0xff);
+	_St7789vWrite8(self, DATA, y1 >> 8);
+	_St7789vWrite8(self, DATA, y1 & 0xff);
 }
 
-static void st7789vPoint(St7789v* self, uint16_t x, uint16_t y, Color color)
+static void St7789vPoint(St7789v* self, uint16_t x, uint16_t y, Color color)
 {
-	_st7789vSetWindow(self, x, y, x, y);
-	_st7789vWrite8(self, CMD, 0x2C);
+	_St7789vSetWindow(self, x, y, x, y);
+	_St7789vWrite8(self, CMD, 0x2C);
     switch (self->colorMode)
     {
         case RGB444:
 			color.r &= 0xf0;
             color.g &= 0xf0;
             color.b &= 0xf0;
-            _st7789vWrite8(self, DATA, color.r | (color.g >> 4));
-            _st7789vWrite8(self, DATA, color.b);
+            _St7789vWrite8(self, DATA, color.r | (color.g >> 4));
+            _St7789vWrite8(self, DATA, color.b);
 			break;
 		case RGB565:
             color.r &= 0xf8;
             color.g &= 0xfc;
             color.b &= 0xf8;
-            _st7789vWrite8(self, DATA, color.r | (color.g >> 5));
-            _st7789vWrite8(self, DATA, (color.g << 3) | color.b);
+            _St7789vWrite8(self, DATA, color.r | (color.g >> 5));
+            _St7789vWrite8(self, DATA, (color.g << 3) | color.b);
 			break;
 		case RGB666:
 			color.r &= 0xfc;
 			color.g &= 0xfc;
 			color.b &= 0xfc;
-			_st7789vWrite8(self, DATA, color.r);
-			_st7789vWrite8(self, DATA, color.g);
-			_st7789vWrite8(self, DATA, color.b);
+			_St7789vWrite8(self, DATA, color.r);
+			_St7789vWrite8(self, DATA, color.g);
+			_St7789vWrite8(self, DATA, color.b);
 			break;
     }
 }
 
-static void st7789vFillWindow(St7789v* self, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, Color color)
+static void St7789vFillWindow(St7789v* self, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, Color color)
 {
     uint32_t length = 0;
     int cnt = 0;
@@ -245,8 +245,8 @@ static void st7789vFillWindow(St7789v* self, uint16_t x0, uint16_t y0, uint16_t 
         }
         break;
     }
-    _st7789vSetWindow(self, x0, y0, x1, y1);
-    _st7789vWrite8(self, CMD, 0x2C);
+    _St7789vSetWindow(self, x0, y0, x1, y1);
+    _St7789vWrite8(self, CMD, 0x2C);
     LL_GPIO_SetOutputPin(self->DC.group, self->DC.pin);
     int i = 0;
     //for (; i < (x1 - x0 + 1) * (y1 - y0 + 1); i++)
@@ -288,10 +288,10 @@ static void st7789vFillWindow(St7789v* self, uint16_t x0, uint16_t y0, uint16_t 
  * @param y1 图像结束点的y坐标
  * @param image 图像数据数组指针
  */
-static void st7789vImage(St7789v* self, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, Color* image)
+static void St7789vImage(St7789v* self, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, Color* image)
 {
-    _st7789vSetWindow(self, x0, y0, x1, y1);
-	_st7789vWrite8(self, CMD, 0x2C);
+    _St7789vSetWindow(self, x0, y0, x1, y1);
+	_St7789vWrite8(self, CMD, 0x2C);
     uint32_t length = 0;
 	switch (self->colorMode)
 	{
@@ -341,11 +341,11 @@ St7789v* St7789vConstruct(
         printf("st7789v malloc failed\n");
         goto e1;
     }
-	st7789v->interface.init = st7789vInit;
-	st7789v->interface.deinit = st7789vDeinit;
-	st7789v->interface.fillWindow = st7789vFillWindow;
-    st7789v->interface.image = st7789vImage;
-	st7789v->interface.point = st7789vPoint;
+	st7789v->interface.init = St7789vInit;
+	st7789v->interface.deinit = St7789vDeinit;
+	st7789v->interface.fillWindow = St7789vFillWindow;
+    st7789v->interface.image = St7789vImage;
+	st7789v->interface.point = St7789vPoint;
 	st7789v->interface.width = width;
 	st7789v->interface.height = height;
 	st7789v->spiI = spiI;
@@ -377,15 +377,15 @@ static uint8_t _st7789v_buffer[240 * 3];
 
 St7789v st7789vInstance = {
     .interface = {
-        .init = st7789vInit,
-        .deinit = st7789vDeinit,
-        .fillWindow = st7789vFillWindow,
-        .image = st7789vImage,
-        .point = st7789vPoint,
+        .init = St7789vInit,
+        .deinit = St7789vDeinit,
+        .fillWindow = St7789vFillWindow,
+        .image = St7789vImage,
+        .point = St7789vPoint,
         .buffer = _st7789v_buffer,
         .bufferLength = 240 * 3,
         .width = 240,
-        .height = 320,
+        .height = 280,
     },
     .spiI = &SPI2Instance,
     .DC = {GPIOA, LL_GPIO_PIN_8},

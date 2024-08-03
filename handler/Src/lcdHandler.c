@@ -11,6 +11,7 @@ static void init(
 	self->busySemaphore = lcdBusySemaphoreHandle;
 	self->lcd->init(self->lcd);
 	osSemaphoreRelease(*(self->busySemaphore));
+	self->fillWindow(self, 0, 0, self->lcd->width, self->lcd->height, int2Color(WHITE));
 }
 
 static void deinit(LcdHandler* self) 
@@ -65,13 +66,13 @@ static void line(LcdHandler* self, uint16_t x1, uint16_t y1, uint16_t x2, uint16
     osSemaphoreRelease(*(self->busySemaphore));
 }
 
-static void fillWindow(LcdHandler* self, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, Color color) 
+static void fillWindow(LcdHandler* self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, Color color) 
 {
 	if (osErrorOS == osSemaphoreWait(*(self->busySemaphore), self->timeoutMs)) {
 		printf("lcdHandler fillWindow: timeout\n");
 		return;
 	}
-	self->lcd->fillWindow(self->lcd, x1, y1, x2, y2, color);
+	self->lcd->fillWindow(self->lcd, x, y, x + width - 1, y + height - 1, color);
 	osSemaphoreRelease(*(self->busySemaphore));
 }
 

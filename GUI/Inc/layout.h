@@ -16,15 +16,7 @@ typedef struct layoutI {
     void (*remove)(struct layoutI*, WeightI*);
 } LayoutI;
 
-typedef struct grid {
-    LayoutI interface;
-    uint16_t* rowDef; 
-    uint16_t* colDef; 
-    uint8_t* itemsPos;
-    // flow
-} Grid;
-
-LayoutI* canvasConstruct(
+LayoutI* CanvasConstruct(
     WeightI* parent,
     uint16_t x,
     uint16_t y,
@@ -33,7 +25,16 @@ LayoutI* canvasConstruct(
     Color background,
     WeightI** items, 
     int itemsCount);
-Grid* gridConstruct(
+
+typedef struct grid {
+    LayoutI interface;
+    uint16_t* rowDef;
+    uint16_t* colDef;
+    uint8_t* itemsPos;
+    // flow
+} Grid;
+
+Grid* GridConstruct(
     WeightI* parent,
     uint16_t x,
     uint16_t y,

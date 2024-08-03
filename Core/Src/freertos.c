@@ -52,9 +52,11 @@ uint8_t adcMailBoxBuffer[4];
 StaticQueue_t adcMailBoxControlBlock;
 /* USER CODE END Variables */
 osThreadId screenRefreshHandle;
-uint32_t screenRefreshTaskBuffer[ 128 ];
+uint32_t screenRefreshTaskBuffer[ 512 ];
 osStaticThreadDef_t screenRefreshTaskControlBlock;
 osThreadId initHandle;
+osTimerId feedWDGTimerHandle;
+osStaticTimerDef_t feedWDGTimerControlBlock;
 osSemaphoreId spi2DmaSemaphoreHandle;
 osStaticSemaphoreDef_t spi2DmaSemaphoreControlBlock;
 osSemaphoreId lcdBusySemaphoreHandle;
@@ -67,6 +69,7 @@ osStaticSemaphoreDef_t lcdBusySemaphoreControlBlock;
 
 void screenRefreshTask(void const * argument);
 void initTask(void const * argument);
+void feedWDGCallback(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -129,7 +132,13 @@ void MX_FREERTOS_Init(void) {
   /* add semaphores, ... */
   /* USER CODE END RTOS_SEMAPHORES */
 
+  /* Create the timer(s) */
+  /* definition and creation of feedWDGTimer */
+  osTimerStaticDef(feedWDGTimer, feedWDGCallback, &feedWDGTimerControlBlock);
+  feedWDGTimerHandle = osTimerCreate(osTimer(feedWDGTimer), osTimerPeriodic, NULL);
+
   /* USER CODE BEGIN RTOS_TIMERS */
+  osTimerStart(feedWDGTimerHandle, 400);
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
 
@@ -140,7 +149,7 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the thread(s) */
   /* definition and creation of screenRefresh */
-  osThreadStaticDef(screenRefresh, screenRefreshTask, osPriorityHigh, 0, 128, screenRefreshTaskBuffer, &screenRefreshTaskControlBlock);
+  osThreadStaticDef(screenRefresh, screenRefreshTask, osPriorityRealtime, 0, 512, screenRefreshTaskBuffer, &screenRefreshTaskControlBlock);
   screenRefreshHandle = osThreadCreate(osThread(screenRefresh), NULL);
 
   /* definition and creation of init */
@@ -168,6 +177,11 @@ void screenRefreshTask(void const * argument)
     uint8_t head[2] = { 0xff,0xff };
     uint16_t* adcBuffer = NULL;
 
+    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+    GridView* gridView = GridViewConstruct(
+        NULL, 10, 20, 240, 240, 
+        displayRow, displayCol, 0, 0, adcBuffer);
+
   /* Infinite loop */
   for(;;)
   {
@@ -177,11 +191,9 @@ void screenRefreshTask(void const * argument)
           osDelay(100);
           continue;
       }
-
+      gridView->data = adcBuffer;
+      gridView->interface.draw(gridView);
       adcBuffer = NULL;
-      // TODO: ι������
-      LL_IWDG_ReloadCounter(IWDG);
-      osDelay(1);
   }
   /* USER CODE END screenRefreshTask */
 }
@@ -201,42 +213,18 @@ void initTask(void const * argument)
     LL_TIM_GenerateEvent_UPDATE(TIM4);
 
     osSemaphoreRelease(*(SPI2Instance.dmaSemaphore));
-
     lcdInstance.init(&lcdInstance, &st7789vInstance, &lcdBusySemaphoreHandle, 100);
-    WeightI* rectangle[5];
-    Color color = {0, 0, 0};
-    for (int i = 0; i < 5; i++)
-    {
-        rectangle[i] = weightConstruct(
-            NULL,
-            0,
-            0,
-            39,
-            39,
-            color,
-            rectangleInit);
-        color.r >>= 1;
-        color.b >>= 1;
-        color.g >>= 1;
-    }
-    
-    LayoutI* grid = gridConstruct(
-		NULL,
-		0,
-		0,
-		239,
-        239,
-        (Color) {0xff, 0xff, 0xff},
-        rectangle,
-		5,
-		(uint16_t[]){ 40, 40, 40, 40, 40 },
-		(uint16_t[]){ 40, 40, 40, 40, 40 },
-		(uint8_t[]){ 0, 0, 1, 1, 2, 2, 3, 3, 4, 4 });
-
-    grid->interface.draw(grid);
-
+    xTaskNotifyGive(screenRefreshHandle);
     osThreadTerminate(NULL);
   /* USER CODE END initTask */
+}
+
+/* feedWDGCallback function */
+void feedWDGCallback(void const * argument)
+{
+  /* USER CODE BEGIN feedWDGCallback */
+    LL_IWDG_ReloadCounter(IWDG);
+  /* USER CODE END feedWDGCallback */
 }
 
 /* Private application code --------------------------------------------------*/

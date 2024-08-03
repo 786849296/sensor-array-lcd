@@ -51,6 +51,7 @@ extern "C" {
 #include <stdbool.h>
 #include <string.h>
 #include "cmsis_os.h"
+#include "color.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -60,12 +61,6 @@ typedef struct
 	GPIO_TypeDef* group;
 	uint32_t pin;
 }Gpio;
-
-typedef struct color {
-    uint8_t r;
-    uint8_t g;
-    uint8_t b;
-} Color;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

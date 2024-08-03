@@ -1,11 +1,11 @@
 #include "sensorSwitch.h"
 
-static void cd4051Deinit(Cd4051* self)
+static void Cd4051Deinit(Cd4051* self)
 {
 	vPortFree(self);
 }
 
-static void cd4051SetState(Cd4051* self, FunctionalState state)
+static void Cd4051SetState(Cd4051* self, FunctionalState state)
 {
 	if (self->INH == NULL)
 		return;
@@ -15,7 +15,7 @@ static void cd4051SetState(Cd4051* self, FunctionalState state)
 		LL_GPIO_SetOutputPin(self->INH->group, self->INH->pin);
 }
 
-static void cd4051SetChannel(Cd4051* self, uint8_t channel)
+static void Cd4051SetChannel(Cd4051* self, uint8_t channel)
 {
 	for (int i = 0; i < 3; i++)
 	{
@@ -34,9 +34,9 @@ Cd4051* Cd4051Construct(Gpio* ABC, Gpio* INH)
 
 	self->ABC = ABC;
 	self->INH = INH;
-	self->interface.deinit = cd4051Deinit;
-	self->interface.setState = cd4051SetState;
-	self->interface.setChannel = cd4051SetChannel;
+	self->interface.deinit = Cd4051Deinit;
+	self->interface.setState = Cd4051SetState;
+	self->interface.setChannel = Cd4051SetChannel;
 	self->interface.maxChannel = 8;
 	return self;
 }
@@ -64,9 +64,9 @@ static Gpio INHCol[4] = {
 static Cd4051 cd4051Row[1] = {
 	{
 		.interface = {
-			.deinit = cd4051Deinit,
-			.setState = cd4051SetState,
-			.setChannel = cd4051SetChannel,
+			.deinit = Cd4051Deinit,
+			.setState = Cd4051SetState,
+			.setChannel = Cd4051SetChannel,
 			.maxChannel = 8
 		},
 		.ABC = ABCRow,
@@ -77,36 +77,36 @@ static Cd4051 cd4051Row[1] = {
 static Cd4051 cd4051Col[4] = {
 	{
 		.interface = {
-			.deinit = cd4051Deinit,
-			.setState = cd4051SetState,
-			.setChannel = cd4051SetChannel,
+			.deinit = Cd4051Deinit,
+			.setState = Cd4051SetState,
+			.setChannel = Cd4051SetChannel,
 			.maxChannel = 8
 		},
 		.ABC = ABCCol,
 		.INH = &INHCol[0],
 	}, {
 		.interface = {
-			.deinit = cd4051Deinit,
-			.setState = cd4051SetState,
-			.setChannel = cd4051SetChannel,
+			.deinit = Cd4051Deinit,
+			.setState = Cd4051SetState,
+			.setChannel = Cd4051SetChannel,
 			.maxChannel = 8
 		},
 		.ABC = ABCCol,
 		.INH = &INHCol[1],
 	}, {
 		.interface = {
-			.deinit = cd4051Deinit,
-			.setState = cd4051SetState,
-			.setChannel = cd4051SetChannel,
+			.deinit = Cd4051Deinit,
+			.setState = Cd4051SetState,
+			.setChannel = Cd4051SetChannel,
 			.maxChannel = 8
 		},
 		.ABC = ABCCol,
 		.INH = &INHCol[2],
 	}, {
 		.interface = {
-			.deinit = cd4051Deinit,
-			.setState = cd4051SetState,
-			.setChannel = cd4051SetChannel,
+			.deinit = Cd4051Deinit,
+			.setState = Cd4051SetState,
+			.setChannel = Cd4051SetChannel,
 			.maxChannel = 8
 		},
 		.ABC = ABCCol,
