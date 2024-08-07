@@ -68,7 +68,9 @@ void MX_I2C2_Init(void)
   LL_I2C_Init(I2C2, &I2C_InitStruct);
   LL_I2C_SetOwnAddress2(I2C2, 0);
   /* USER CODE BEGIN I2C2_Init 2 */
-
+  LL_GPIO_SetPinPull(GPIOB, LL_GPIO_PIN_10, LL_GPIO_PULL_UP);
+  LL_GPIO_SetPinPull(GPIOB, LL_GPIO_PIN_11, LL_GPIO_PULL_UP);
+  LL_I2C_Enable(I2C2);
   /* USER CODE END I2C2_Init 2 */
 
 }

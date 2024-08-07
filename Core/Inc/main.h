@@ -112,7 +112,7 @@ void Error_Handler(void);
 #define MAX_ROW 32
 #define MAX_COL 32
 extern osSemaphoreId spi2DmaSemaphoreHandle;
-extern osSemaphoreId lcdBusySemaphoreHandle;
+extern osSemaphoreId TouchInitSemaphoreHandle;
 extern QueueHandle_t adcMailBox;
 /* USER CODE END Private defines */
 

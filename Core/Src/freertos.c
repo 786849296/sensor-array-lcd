@@ -25,8 +25,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "lcd.h"
 #include "lcdHandler.h"
+#include "ctpHandler.h"
 #include "layout.h"
 /* USER CODE END Includes */
 
@@ -55,12 +55,19 @@ osThreadId screenRefreshHandle;
 uint32_t screenRefreshTaskBuffer[ 512 ];
 osStaticThreadDef_t screenRefreshTaskControlBlock;
 osThreadId initHandle;
+osThreadId TouchProcessHandle;
+uint32_t TouchProcessBuffer[ 128 ];
+osStaticThreadDef_t TouchProcessControlBlock;
 osTimerId feedWDGTimerHandle;
 osStaticTimerDef_t feedWDGTimerControlBlock;
 osSemaphoreId spi2DmaSemaphoreHandle;
 osStaticSemaphoreDef_t spi2DmaSemaphoreControlBlock;
 osSemaphoreId lcdBusySemaphoreHandle;
 osStaticSemaphoreDef_t lcdBusySemaphoreControlBlock;
+osSemaphoreId ctpBusySemaphoreHandle;
+osStaticSemaphoreDef_t ctpBusySemaphoreControlBlock;
+osSemaphoreId TouchInitSemaphoreHandle;
+osStaticSemaphoreDef_t TouchInitSemaphoreControlBlock;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -69,6 +76,7 @@ osStaticSemaphoreDef_t lcdBusySemaphoreControlBlock;
 
 void screenRefreshTask(void const * argument);
 void initTask(void const * argument);
+void TouchProcessTask(void const * argument);
 void feedWDGCallback(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
@@ -128,6 +136,14 @@ void MX_FREERTOS_Init(void) {
   osSemaphoreStaticDef(lcdBusySemaphore, &lcdBusySemaphoreControlBlock);
   lcdBusySemaphoreHandle = osSemaphoreCreate(osSemaphore(lcdBusySemaphore), 1);
 
+  /* definition and creation of ctpBusySemaphore */
+  osSemaphoreStaticDef(ctpBusySemaphore, &ctpBusySemaphoreControlBlock);
+  ctpBusySemaphoreHandle = osSemaphoreCreate(osSemaphore(ctpBusySemaphore), 1);
+
+  /* definition and creation of TouchInitSemaphore */
+  osSemaphoreStaticDef(TouchInitSemaphore, &TouchInitSemaphoreControlBlock);
+  TouchInitSemaphoreHandle = osSemaphoreCreate(osSemaphore(TouchInitSemaphore), 1);
+
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
   /* USER CODE END RTOS_SEMAPHORES */
@@ -149,12 +165,16 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the thread(s) */
   /* definition and creation of screenRefresh */
-  osThreadStaticDef(screenRefresh, screenRefreshTask, osPriorityRealtime, 0, 512, screenRefreshTaskBuffer, &screenRefreshTaskControlBlock);
+  osThreadStaticDef(screenRefresh, screenRefreshTask, osPriorityHigh, 0, 512, screenRefreshTaskBuffer, &screenRefreshTaskControlBlock);
   screenRefreshHandle = osThreadCreate(osThread(screenRefresh), NULL);
 
   /* definition and creation of init */
   osThreadDef(init, initTask, osPriorityRealtime, 0, 128);
   initHandle = osThreadCreate(osThread(init), NULL);
+
+  /* definition and creation of TouchProcess */
+  osThreadStaticDef(TouchProcess, TouchProcessTask, osPriorityRealtime, 0, 128, TouchProcessBuffer, &TouchProcessControlBlock);
+  TouchProcessHandle = osThreadCreate(osThread(TouchProcess), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -215,8 +235,34 @@ void initTask(void const * argument)
     osSemaphoreRelease(*(SPI2Instance.dmaSemaphore));
     lcdInstance.init(&lcdInstance, &st7789vInstance, &lcdBusySemaphoreHandle, 100);
     xTaskNotifyGive(screenRefreshHandle);
+
+    ctpHandler.init(&ctpHandler, &cst816tInstance, &ctpBusySemaphoreHandle);
+
     osThreadTerminate(NULL);
   /* USER CODE END initTask */
+}
+
+/* USER CODE BEGIN Header_TouchProcessTask */
+/**
+* @brief Function implementing the TouchProcess thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_TouchProcessTask */
+void TouchProcessTask(void const * argument)
+{
+  /* USER CODE BEGIN TouchProcessTask */
+    uint16_t x, y;
+  /* Infinite loop */
+  for(;;)
+  {
+      osSemaphoreWait(TouchInitSemaphoreHandle, osWaitForever);
+      GESTURE gesture = ctpHandler.getGesture(&ctpHandler);
+      ctpHandler.getPos(&ctpHandler, &x, &y);
+      printf("Touch detected. x: %d, y: %d, gesture: %d\n", x, y, gesture);
+    osDelay(1);
+  }
+  /* USER CODE END TouchProcessTask */
 }
 
 /* feedWDGCallback function */

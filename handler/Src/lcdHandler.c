@@ -88,7 +88,7 @@ static void image(LcdHandler* self, uint16_t x, uint16_t y, uint16_t width, uint
 
 LcdHandler lcdInstance = {
 	.lcd = &st7789vInstance,
-	.busySemaphore = &lcdBusySemaphoreHandle,
+	.busySemaphore = NULL,
 	.timeoutMs = 100,
 	.init = init,
 	.deinit = deinit,
